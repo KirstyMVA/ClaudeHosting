@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type Matching Activity</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 2.2em;
+        }
+
+        .progress-bar {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4299e1, #38b2ac);
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #4a5568;
+            font-size: 0.9em;
+            margin-bottom: 25px;
+        }
+
+        .scenario-card {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .scenario-text {
+            font-size: 1.1em;
+            color: #2d3748;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .option-button {
+            background: white;
+            border: 2px solid #cbd5e0;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Lexend', sans-serif;
+            font-size: 1em;
+            color: #2d3748;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .option-button:hover {
+            border-color: #4299e1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .option-button.selected {
+            border-color: #4299e1;
+            background: #ebf8ff;
+        }
+
+        .option-button.correct {
+            border-color: #38a169;
+            background: #c6f6d5;
+            color: #2f855a;
+        }
+
+        .option-button.incorrect {
+            border-color: #e53e3e;
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .option-button.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .option-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .option-description {
+            font-size: 0.85em;
+            color: #4a5568;
+        }
+
+        .feedback {
+            background: #f0fff4;
+            border: 2px solid #68d391;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background: #fffaf0;
+            border-color: #f6ad55;
+        }
+
+        .feedback h3 {
+            color: #2f855a;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .feedback.incorrect h3 {
+            color: #c05621;
+        }
+
+        .feedback-text {
+            color: #2d3748;
+            line-height: 1.5;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Lexend', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        .btn-primary {
+            background: #4299e1;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #3182ce;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .final-score {
+            text-align: center;
+            background: #f0fff4;
+            border: 2px solid #68d391;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .final-score h2 {
+            color: #2f855a;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .score-text {
+            font-size: 1.2em;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .score-percentage {
+            font-size: 2em;
+            font-weight: 600;
+            color: #2f855a;
+        }
+
+        @media (max-width: 600px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Data Type Matching</h1>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-text" id="progress-text">Question 1 of 14</div>
+
+        <div class="scenario-card">
+            <div class="scenario-text" id="scenario-text">
+                <!-- Current scenario will be displayed here -->
+            </div>
+
+            <div class="options-grid">
+                <div class="option-button" data-type="class" onclick="selectOption('class')">
+                    <div class="option-title">Class</div>
+                    <div class="option-description">Complex objects with properties and methods</div>
+                </div>
+                <div class="option-button" data-type="pointer" onclick="selectOption('pointer')">
+                    <div class="option-title">Pointer</div>
+                    <div class="option-description">References to memory locations</div>
+                </div>
+                <div class="option-button" data-type="record" onclick="selectOption('record')">
+                    <div class="option-title">Record/Struct</div>
+                    <div class="option-description">Simple data structures grouping related fields</div>
+                </div>
+                <div class="option-button" data-type="enumerated" onclick="selectOption('enumerated')">
+                    <div class="option-title">Enumerated Type</div>
+                    <div class="option-description">Fixed set of named constants</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="feedback" class="feedback">
+            <h3 id="feedback-title">Correct!</h3>
+            <div id="feedback-text" class="feedback-text"></div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" id="submit-btn" onclick="submitAnswer()" disabled>Submit Answer</button>
+            <button class="btn btn-secondary" id="next-btn" onclick="nextQuestion()" style="display: none;">Next Question</button>
+            <button class="btn btn-secondary" onclick="resetGame()">Restart</button>
+        </div>
+
+        <div id="final-score" class="final-score" style="display: none;">
+            <h2>Activity Complete!</h2>
+            <div class="score-text">Your final score:</div>
+            <div class="score-percentage" id="final-percentage">0%</div>
+            <div style="margin-top: 15px; color: #4a5568;" id="final-message"></div>
+        </div>
+    </div>
+
+    <script>
+        const scenarios = [
+            { text: "A bank account with balance, account number, and deposit/withdraw methods", type: "class", explanation: "This represents a Class because it has both data (balance, account number) and behaviors (deposit/withdraw methods). Classes encapsulate related data and operations." },
+            { text: "Days of the week (Monday, Tuesday, Wednesday, etc.)", type: "enumerated", explanation: "This is an Enumerated Type because it represents a fixed set of named constants. Each day is a distinct, predefined value in a limited set." },
+            { text: "A student's grade record with name, ID, and GPA", type: "record", explanation: "This is a Record/Struct because it groups related data fields together without complex behaviors. It's a simple data structure for storing related information." },
+            { text: "A reference to the next node in a linked list", type: "pointer", explanation: "This is a Pointer because it stores a memory address that references another object or data structure, allowing indirect access to that data." },
+            { text: "Traffic light states (Red, Yellow, Green)", type: "enumerated", explanation: "This is an Enumerated Type because it represents a fixed set of named constants. Traffic lights can only be in one of these three predefined states." },
+            { text: "A car object with make, model, year, and start/stop methods", type: "class", explanation: "This represents a Class because it combines data (make, model, year) with behaviors (start/stop methods). Classes model real-world objects with both attributes and actions." },
+            { text: "A coordinate point with x and y values", type: "record", explanation: "This is a Record/Struct because it simply groups related data (x and y coordinates) together without complex behaviors or methods." },
+            { text: "Priority levels (Low, Medium, High, Critical)", type: "enumerated", explanation: "This is an Enumerated Type because it represents a fixed set of named constants for priority levels. Each priority is a distinct, predefined value." },
+            { text: "A memory address pointing to an array element", type: "pointer", explanation: "This is a Pointer because it stores a memory address that references a specific location in memory where an array element is stored." },
+            { text: "A shopping cart with items, total, and add/remove methods", type: "class", explanation: "This represents a Class because it has both data (items, total) and behaviors (add/remove methods). It models a complex object with state and operations." },
+            { text: "Employee information with name, department, and salary", type: "record", explanation: "This is a Record/Struct because it groups related employee data fields together without complex behaviors. It's a simple data structure for storing information." },
+            { text: "A reference to a function in memory", type: "pointer", explanation: "This is a Pointer because it stores a memory address that references a function's location in memory, allowing indirect function calls." },
+            { text: "File permissions (Read, Write, Execute)", type: "enumerated", explanation: "This is an Enumerated Type because it represents a fixed set of named constants for file permissions. Each permission is a distinct, predefined value." },
+            { text: "A smartphone with apps, battery level, and call/text methods", type: "class", explanation: "This represents a Class because it combines data (apps, battery level) with behaviors (call/text methods). It models a complex object with both state and functionality." }
+        ];
+
+        let currentQuestion = 0;
+        let selectedAnswer = null;
+        let score = 0;
+        let userAnswers = [];
+
+        function initializeGame() {
+            currentQuestion = 0;
+            selectedAnswer = null;
+            score = 0;
+            userAnswers = [];
+            document.getElementById('final-score').style.display = 'none';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const scenario = scenarios[currentQuestion];
+            document.getElementById('scenario-text').textContent = scenario.text;
+            document.getElementById('progress-text').textContent = `Question ${currentQuestion + 1} of ${scenarios.length}`;
+            
+            const progressPercent = ((currentQuestion) / scenarios.length) * 100;
+            document.getElementById('progress-fill').style.width = progressPercent + '%';
+
+            // Reset option buttons
+            document.querySelectorAll('.option-button').forEach(btn => {
+                btn.classList.remove('selected', 'correct', 'incorrect', 'disabled');
+            });
+
+            // Hide feedback and reset buttons
+            document.getElementById('feedback').classList.remove('show');
+            document.getElementById('submit-btn').style.display = 'inline-block';
+            document.getElementById('submit-btn').disabled = true;
+            document.getElementById('next-btn').style.display = 'none';
+            
+            selectedAnswer = null;
+        }
+
+        function selectOption(type) {
+            // Remove previous selection
+            document.querySelectorAll('.option-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            // Add selection to clicked option
+            document.querySelector(`[data-type="${type}"]`).classList.add('selected');
+            selectedAnswer = type;
+            
+            // Enable submit button
+            document.getElementById('submit-btn').disabled = false;
+        }
+
+        function submitAnswer() {
+            if (!selectedAnswer) return;
+
+            const scenario = scenarios[currentQuestion];
+            const isCorrect = selectedAnswer === scenario.type;
+            
+            if (isCorrect) {
+                score++;
+            }
+
+            userAnswers.push({
+                question: scenario.text,
+                correct: scenario.type,
+                selected: selectedAnswer,
+                isCorrect: isCorrect
+            });
+
+            // Show visual feedback on buttons
+            document.querySelectorAll('.option-button').forEach(btn => {
+                btn.classList.add('disabled');
+                if (btn.dataset.type === scenario.type) {
+                    btn.classList.add('correct');
+                } else if (btn.dataset.type === selectedAnswer && !isCorrect) {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            // Show feedback
+            const feedback = document.getElementById('feedback');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackText = document.getElementById('feedback-text');
+            
+            if (isCorrect) {
+                feedback.classList.remove('incorrect');
+                feedbackTitle.textContent = 'Correct!';
+                feedbackText.textContent = scenario.explanation;
+            } else {
+                feedback.classList.add('incorrect');
+                feedbackTitle.textContent = 'Incorrect';
+                feedbackText.textContent = `The correct answer is ${scenario.type}. ${scenario.explanation}`;
+            }
+            
+            feedback.classList.add('show');
+
+            // Update button states
+            document.getElementById('submit-btn').style.display = 'none';
+            
+            if (currentQuestion < scenarios.length - 1) {
+                document.getElementById('next-btn').style.display = 'inline-block';
+            } else {
+                document.getElementById('next-btn').textContent = 'View Results';
+                document.getElementById('next-btn').style.display = 'inline-block';
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion < scenarios.length) {
+                showQuestion();
+            } else {
+                showFinalScore();
+            }
+        }
+
+        function showFinalScore() {
+            const percentage = Math.round((score / scenarios.length) * 100);
+            document.getElementById('final-percentage').textContent = percentage + '%';
+            
+            let message = '';
+            if (percentage === 100) {
+                message = 'Perfect! You have an excellent understanding of data types.';
+            } else if (percentage >= 80) {
+                message = 'Great job! You have a solid understanding of data types.';
+            } else if (percentage >= 60) {
+                message = 'Good work! Review the explanations to strengthen your understanding.';
+            } else {
+                message = 'Keep practicing! Review the concepts and try again.';
+            }
+            
+            document.getElementById('final-message').textContent = message;
+            document.getElementById('final-score').style.display = 'block';
+            
+            // Update progress bar to 100%
+            document.getElementById('progress-fill').style.width = '100%';
+            document.getElementById('progress-text').textContent = 'Complete!';
+        }
+
+        function resetGame() {
+            initializeGame();
+        }
+
+        // Initialize the game when page loads
+        window.addEventListener('load', initializeGame);
+    </script>
+</body>
+</html>
